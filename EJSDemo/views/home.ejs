@@ -2,7 +2,14 @@
 
 <h1> Hi welcome to my page! ASDLakasdsadsaldaspldjaposdjasopdjasopdosaD</h1>
 
-<%=5+5%>
+<h2> These are my friends</h2>
+<%friends.forEach(function(friend){ %>
+    <li> <%=friend%> </li>
+<% }); %>
 
-
+<form action= "/addfriend", method="POST">
+    <input type="text" placeholder="name" name="newfriend">
+    <button>I made a new friend!</button>
+    
+</form>
 <% include partials/footer%>
