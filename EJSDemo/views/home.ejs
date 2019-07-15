@@ -1,6 +1,6 @@
 <% include partials/header%>
 
-<h1> Hi welcome to my page! ASDLakasdsadsaldaspldjaposdjasopdjasopdosaD</h1>
+<h1> Hi welcome to my page!</h1>
 
 <h2> These are my friends</h2>
 <%friends.forEach(function(friend){ %>
@@ -10,6 +10,14 @@
 <form action= "/addfriend", method="POST">
     <input type="text" placeholder="name" name="newfriend">
     <button>I made a new friend!</button>
+</form>   
     
-</form>
+<hi> SEACH FOR A MOVIE HERE:</hi>
+    <form action ="/req", method="GET"> 
+        <input type="text" placeholder="enter movie" name="search">
+        <input type = "submit">
+    </form>
+    
+    
+
 <% include partials/footer%>
