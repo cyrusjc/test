@@ -1,18 +1,23 @@
- var campgrounds =[
-            {name: "Swag1", image: "https://www.photosforclass.com/download/pixabay-4285605?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F52e2dd464c52a914f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=Mrexentric"},
-            {name: "Swag2", image: "https://www.photosforclass.com/download/pixabay-4303359?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F52e3d5404957a514f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=chanwity"},
-            {name: "Swag3", image: "https://www.photosforclass.com/download/pixabay-4285605?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F52e2dd464c52a914f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=Mrexentric"},
-            {name: "Swag4", image: "https://www.photosforclass.com/download/pixabay-4303359?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F52e3d5404957a514f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=chanwity"},
-            {name: "Swag5", image: "https://www.photosforclass.com/download/pixabay-1208201?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F57e2d54b4852ad14f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=Free-Photos"},
-            {name: "Swag6", image: "https://www.photosforclass.com/download/pixabay-1208201?webUrl=https%3A%2F%2Fpixabay.com%2Fget%2F57e2d54b4852ad14f6da8c7dda793f7f1636dfe2564c704c732c79d5944cc158_960.jpg&user=Free-Photos"}
-    ]
 
 // initializing Express
-
 var express = require("express");
 var app = express();
+// bodyParser for requests since they come back in string file.
 var bodyParser = require("body-parser");
 
+// ===========initilizing mongoose for db accessing==============
+var mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/yelp_app",{useNewUrlParser:true})
+
+var campSchema = new mongoose.Schema({
+   name: String,
+   image: String
+});
+
+// THIS IS OUR MODEL SUCH THAT WE CAN USE .camps.
+var Camp = mongoose.model("Camp", campSchema);
+
+// ==================================================================
 // ENABLES US TO USE STATIC 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -34,18 +39,30 @@ app.get("/campgrounds/new", function(req,res){
 
 
 app.get("/campgrounds",function(req,res){
-   
+    Camp.find({}, function(err,campgrounds){
+        if (err){
+            console.log(err)
+        } else {
+       res.render("campgrounds", {campgrounds:campgrounds}) 
+        }
+    });
     
-    res.render("campgrounds", {campgrounds:campgrounds})
+    
 });
 
 app.post("/campgrounds",function(req,res){
-   var name = req.body.name;
-   var image = req.body.image;
-   var newCampground ={name: name, image:image};
-   campgrounds.push(newCampground);
-   res.redirect("/campgrounds");
+
+    var name = req.body.name;
+    var image = req.body.image;
+    var newCampground ={name: name, image:image};
     
+   Camp.create(newCampground, function(err,Created){
+       if(err){
+            console.log(err)
+       } else{
+            res.redirect("/campgrounds");
+       }
+   })
 });
 
 
